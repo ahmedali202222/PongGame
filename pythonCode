@@ -1,0 +1,414 @@
+"""
+This module contains a Python implementation of a Pong game with options for
+Player vs Player and Player vs CPU gameplay. It uses the tkinter library for
+the user interface and turtle for drawing game elements.
+"""
+import tkinter as tk
+from tkinter import scrolledtext
+import turtle
+import random
+import sys
+import time
+import re
+
+class PythonPong():
+    """
+    Python Pong game class.
+    """
+    
+    def variables(self):
+        """
+        Initialize game variables.
+        """
+        # Variables
+        self.top_border = 270
+        self.bottom_border = -270
+        self.right_border = 480
+        self.left_border = -480
+        self.paddle_speed = 70
+        self.paddle_boundary_top = self.top_border
+        self.paddle_boundary_bottom = self.bottom_border
+        self.max_score = 5
+        self.playerA = 0
+        self.playerB = 0
+
+    def draw(self):
+        """
+        Draw game elements.
+        """
+        # Screen Setup
+        self.screen = turtle.Screen()
+        self.screen.title("Python Pong")
+        self.screen.setup(width=1280, height=720)
+
+        # Draw Court and Service Lines
+        self.background = turtle.Turtle()
+        self.background.speed(0)
+        self.background.color("green")
+        self.background.penup()
+        self.background.goto(-480, 270)
+        self.background.pendown()
+        self.background.begin_fill()
+        self.background.goto(480, 270)
+        self.background.goto(480, -270)
+        self.background.goto(-480, -270)
+        self.background.goto(-480, 270)
+        self.background.end_fill()
+        self.background.hideturtle()
+
+        self.left_line = turtle.Turtle()
+        self.left_line.speed(0)
+        self.left_line.color("white")
+        self.left_line.penup()
+        self.left_line.goto(0, 0)
+        self.left_line.pendown()
+        self.left_line.goto(-240, 0)
+        self.left_line.goto(-240, 200)
+        self.left_line.goto(-480, 200)
+        self.left_line.goto(-240, 200)
+        self.left_line.goto(0, 200)
+
+        self.left_line.penup()
+        self.left_line.goto(-240, 0)
+        self.left_line.pendown()
+        self.left_line.goto(-240, -200)
+        self.left_line.goto(-480, -200)
+        self.left_line.goto(-240, -200)
+        self.left_line.goto(0, -200)
+        self.left_line.hideturtle()
+
+        self.right_line = turtle.Turtle()
+        self.right_line.speed(0)
+        self.right_line.color("white")
+        self.right_line.penup()
+        self.right_line.goto(0, 0)
+        self.right_line.pendown()
+        self.right_line.goto(240, 0)
+        self.right_line.goto(240, 200)
+        self.right_line.goto(480, 200)
+        self.right_line.goto(240, 200)
+        self.right_line.goto(0, 200)
+
+        self.right_line.penup()
+        self.right_line.goto(240, 0)
+        self.right_line.pendown()
+        self.right_line.goto(240, -200)
+        self.right_line.goto(480, -200)
+        self.right_line.goto(240, -200)
+        self.right_line.goto(0, -200)
+        self.right_line.hideturtle()
+
+    # Draw the center net
+        self.net = turtle.Turtle()
+        self.net.speed(0)
+        self.net.color("white")
+        self.net.penup()
+        self.net.goto(0, 270)
+        self.net.pendown()
+        self.net.setheading(270)
+        while self.net.ycor() > -270:
+            self.net.forward(20)
+            self.net.penup()
+            self.net.forward(20)
+            self.net.pendown()
+
+    # Draw paddles
+        self.paddle1 = turtle.Turtle()
+        self.paddle1.speed(0)
+        self.paddle1.shape("square")
+        self.paddle1.color("red")
+        self.paddle1.shapesize(stretch_wid=6, stretch_len=1)
+        self.paddle1.penup()
+        self.paddle1.goto(-375, 0)
+
+        self.paddle2 = turtle.Turtle()
+        self.paddle2.speed(0)
+        self.paddle2.shape("square")
+        self.paddle2.color("blue")
+        self.paddle2.shapesize(stretch_wid=6, stretch_len=1)
+        self.paddle2.penup()
+        self.paddle2.goto(375, 0)
+
+    # Draw ball
+        self.ball = turtle.Turtle()
+        self.ball.speed(0)
+        self.ball.shape("circle")
+        self.ball.color("white")
+        self.ball.penup()
+        self.ball.goto(0, 0)
+        self.ball.dx = 8
+        self.ball.dy = -8
+
+    # Draw scoreboard
+        self.score = turtle.Turtle()
+        self.score.speed(0)
+        self.score.penup()
+        self.score.hideturtle()
+        self.score.goto(0, 300)
+        
+    def increase_ball_speed(self):
+        """
+        Increase ball speed.
+        """
+        if abs(self.ball.dx) < 12.5:
+            self.ball.dx *= 1.05
+            self.ball.dy *= 1.05
+
+    def movePad1Up(self):
+        """
+        Move paddle 1 up.
+        """
+        y = self.paddle1.ycor() + self.paddle_speed
+        if y < self.paddle_boundary_top:
+            self.paddle1.sety(y)
+
+    def movePad1Down(self):
+        """
+        Move paddle 1 down.
+        """
+        y = self.paddle1.ycor() - self.paddle_speed
+        if y > self.paddle_boundary_bottom:
+            self.paddle1.sety(y)
+
+    def movePad2Up(self):
+        """
+        Move paddle 2 up.
+        """
+        y = self.paddle2.ycor() + self.paddle_speed
+        if y <= self.paddle_boundary_top:
+            self.paddle2.sety(y)
+
+    def movePad2Down(self):
+        """
+        Move paddle 2 down.
+        """
+        y = self.paddle2.ycor() - self.paddle_speed
+        if y >= self.paddle_boundary_bottom:
+            self.paddle2.sety(y)
+
+    def ai_player_2(self):
+        """
+        AI for controlling paddle 2.
+        """
+        if self.ball.dx > 0:
+            reaction_time = random.uniform(0.1, 0.3)
+            paddle_center = self.paddle2.ycor() + (self.paddle2.shapesize()[0] * 20 / 2)
+            predicted_y = self.ball.ycor() + random.uniform(-20, 20) + ((self.right_border - self.ball.xcor()) / self.ball.dx) * self.ball.dy
+            optimal_y = paddle_center + (self.ball.xcor() - self.paddle2.xcor()) * (self.ball.dy / self.ball.dx)
+            self.screen.ontimer(lambda: self.move_ai_paddle(predicted_y, optimal_y), int(reaction_time * 1000))
+        self.screen.ontimer(self.ai_player_2, 200)
+
+    def move_ai_paddle(self, predicted_y, optimal_y):
+        """
+        Move AI paddle based on predicted and optimal positions.
+        """
+        if abs(predicted_y - optimal_y) > 10:
+            if predicted_y > optimal_y:
+                self.movePad2Up()
+            elif predicted_y < optimal_y:
+                self.movePad2Down()
+
+    def reset_game(self):
+        """
+        Reset the game.
+        """
+        self.paddle1.goto(-375, 0)
+        self.paddle2.goto(375, 0)
+        self.ball.goto(0, 0)
+        self.ball.dx = random.choice([-8, 8])
+        self.ball.dy = random.choice([-8, 8])
+        self.score.write("Player A: {:<2}    Player B: {:>2}".format(self.playerA, self.playerB), align="center", font=("Courier", 20, "bold"))
+        time.sleep(1)
+        self.score.clear()
+
+    def countdown(self):
+        """
+        Display countdown message.
+        """
+        self.score.clear()
+        self.score.write("Get ready!", align="center", font=("Courier", 20, "bold"))
+        time.sleep(1)
+        self.score.clear()
+        
+    def run_game(self):
+        """
+        Run the game.
+        """
+        self.screen.listen()
+        self.screen.onkeypress(self.movePad1Up, "w")
+        self.screen.onkeypress(self.movePad1Down, "s")
+        self.screen.onkeypress(self.movePad2Up, "Up")
+        self.screen.onkeypress(self.movePad2Down, "Down")
+
+        while True:
+            self.screen.update()  # Update the screen
+
+            # Move the ball
+            self.ball.setx(self.ball.xcor() + self.ball.dx)
+            self.ball.sety(self.ball.ycor() + self.ball.dy)
+
+            # Check for collisions with walls
+            if self.ball.ycor() >= self.top_border or self.ball.ycor() <= self.bottom_border:
+                self.ball.dy *= -1
+
+            # Check for collisions with paddles
+            if (self.ball.dx > 0 and self.paddle2.xcor() - 25 <= self.ball.xcor() <= self.paddle2.xcor() and
+                    self.paddle2.ycor() - 75 <= self.ball.ycor() <= self.paddle2.ycor() + 75):
+                self.ball.dx *= -1
+                self.increase_ball_speed()
+
+            elif (self.ball.dx < 0 and self.paddle1.xcor() + 25 >= self.ball.xcor() >= self.paddle1.xcor() and
+                self.paddle1.ycor() - 75 <= self.ball.ycor() <= self.paddle1.ycor() + 75):
+                self.ball.dx *= -1
+                self.increase_ball_speed()
+
+            # Check for scoring
+            if self.ball.xcor() >= self.right_border:
+                self.playerA += 1
+                self.score.clear()
+                self.score.write("Player A: {:<2}    Player B: {:>2}".format(self.playerA, self.playerB), align="center", font=("Courier", 20, "bold"))
+                if self.playerA >= self.max_score:
+                    self.score.clear()
+                    self.ball.goto(0, 0)
+                    self.ball.dx = 0
+                    self.ball.dy = 0
+                    self.score.write("Player A wins!", align="center", font=("Courier", 20, "bold"))
+                    time.sleep(5)
+                    break
+                self.reset_game()
+
+            elif self.ball.xcor() <= self.left_border:
+                self.playerB += 1
+                self.score.clear()
+                self.score.write("Player A: {:<2}    Player B: {:>2}".format(self.playerA, self.playerB), align="center", font=("Courier", 20, "bold"))
+                if self.playerB >= self.max_score:
+                    self.score.clear()
+                    self.ball.goto(0, 0)
+                    self.ball.dx = 0
+                    self.ball.dy = 0
+                    self.score.write("Player B wins!", align="center", font=("Courier", 20, "bold"))
+                    time.sleep(5)
+                    break
+                self.reset_game()
+
+
+def play_vs_play():
+    """
+    Start Player vs Player game.
+    """
+    pong = PythonPong()  # Create an instance of PythonPong
+    pong.variables()     # Initialize variables
+    pong.draw()          # Draw the game elements and set up the game
+    pong.countdown()     # Display countdown message
+    root.destroy()       # Tkinter window will close before the game loop
+    pong.run_game()      # Run Player vs Player
+
+def play_vs_cpu():
+    """
+    Start Player vs CPU game.
+    """
+    pong = PythonPong()  # Create an instance of PythonPong
+    pong.variables()     # Initialize variables
+    pong.draw()          # Draw the game elements and set up the game
+    pong.countdown()     # Display countdown message
+    root.destroy()       # Tkinter window will close before the game loop
+    pong.ai_player_2()   # Activate CPU player
+    pong.run_game()      # Run Player vs CPU
+
+"""This function User input to be filtered
+for special characters"""
+def filter_special_characters(input_string):
+    # Allow only letters, numbers, and some punctuation
+    sanitized_string = re.sub(r'[^a-zA-Z0-9 .,?!]', '', input_string)
+    return sanitized_string
+
+def show_user_agreement(root):
+    agreement_text = """
+        User Agreement:
+        Data Privacy:
+        - Your data privacy is important to us. We collect and process data only for the purpose of this application's functionality.
+        - We do not share your personal information with third parties without your consent.
+        
+        Application Sharing:
+        - You may use the application on your personal devices.
+        - Sharing your application credentials with others is prohibited.
+        - Each user should have a separate account.
+        
+        Data Usage:
+        - You may not sell or distribute data generated or collected by this application without the express consent of Forestview.
+        
+        Security Measures:
+        - We conduct periodic vulnerability assessments to ensure the security of our system.
+        - We demand that all our key vendors adhere to strict security standards and perform periodic vulnerability assessments.
+        
+        Change of Requirements:
+        - As technology and the overall security landscape evolve, requirements for using this application may change.
+        - Users will be notified of any changes through the application's official communication channels.
+        
+        Disclaimer:
+        - This application is provided "as is" without any warranties.
+        - Forestview is not responsible for any data breaches, losses, or damages.
+        
+        Indemnity Clause:
+        - By using this application, you agree to indemnify Forestview from any legal ramifications arising from data breaches, zero-day attacks, and database worms, including SQL injection.
+        
+        By proceeding, you accept the terms of this agreement.
+    """
+    
+    # Create a new window for the agreement
+    agreement_window = tk.Toplevel(root)
+    agreement_window.title("User Agreement")
+    agreement_window.geometry("600x400")
+    agreement_window.config(bg='lightblue')
+    
+    text_widget = scrolledtext.ScrolledText(agreement_window, wrap=tk.WORD)
+    text_widget.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+    text_widget.insert(tk.INSERT, agreement_text)
+    text_widget.config(state='disabled')
+    
+    # Function to close the agreement window and proceed
+    def on_agree():
+        agreement_window.destroy()
+    
+    # Agree button
+    agree_button = tk.Button(agreement_window, text="I Agree", command=on_agree)
+    agree_button.pack(pady=10)
+    
+    agreement_window.wait_window()
+
+def exit_game():
+    """
+    Exit the game.
+    """
+    sys.exit()
+
+def main():
+    global root  # Define root as global if it's going to be accessed outside main
+    root = tk.Tk()
+    root.title("Python Pong")
+
+    # Temporarily hide the main window until the user agreement is accepted
+    root.withdraw()
+
+    # Show the user agreement. The main window will be shown after the agreement is accepted
+    show_user_agreement(root)
+
+    # Main window setup
+    root.deiconify()  # Show the main window after the user agreement is accepted
+
+    frame = tk.Frame(root)
+    frame.pack(expand=False, fill=tk.BOTH)
+
+    btn_ping_pong = tk.Button(frame, text="Player VS Player", command=play_vs_play, height=3, width=20)
+    btn_ping_pong.pack(side=tk.LEFT, padx=10, pady=30)
+
+    btn_pong_cpu = tk.Button(frame, text="Player VS CPU", command=play_vs_cpu, height=3, width=20)
+    btn_pong_cpu.pack(side=tk.LEFT, padx=10, pady=30)
+
+    btn_exit = tk.Button(frame, text="Exit", command=exit_game, height=3, width=20)
+    btn_exit.pack(side=tk.LEFT, padx=10, pady=30)
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
