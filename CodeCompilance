@@ -1,0 +1,85 @@
+Ahmed Ali Csc4110
+Group: Project 2
+Python Pong Code Compliance
+Code checked with Pylint
+------------------------------------------------------------------
+Your code has been rated at 8.15/10 (previous run: 8.10/10, +0.04)
+ahmed@ahmeds-MacBook-Air CSC4110 % pylint /Users/ahmed/Desktop/CSC4110/proj2csc4010.py ************* Module proj2csc4010
+proj2csc4010.py:285:0: C0301: Line too long (151/100) (line-too-long)
+proj2csc4010.py:341:0: C0304: Final newline missing (missing-final-newline)
+proj2csc4010.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+proj2csc4010.py:7:0: W0105: String statement has no effect (pointless-string-statement)
+proj2csc4010.py:29:8: C0103: Attribute name "playerA" doesn't conform to snake_case naming style (invalid-name) proj2csc4010.py:30:8: C0103: Attribute name "playerB" doesn't conform to snake_case naming style (invalid-name) proj2csc4010.py:11:0: R0902: Too many instance attributes (19/7) (too-many-instance-attributes) proj2csc4010.py:150:25: C0209: Formatting a regular string which could be an f-string (consider-using-f-string) proj2csc4010.py:37:4: R0915: Too many statements (94/50) (too-many-statements)
+proj2csc4010.py:159:4: C0103: Method name "movePad1Up" doesn't conform to snake_case naming style (invalid-name) proj2csc4010.py:167:4: C0103: Method name "movePad1Down" doesn't conform to snake_case naming style (invalid-name)
+proj2csc4010.py:175:4: C0103: Method name "movePad2Up" doesn't conform to snake_case naming style (invalid-name) proj2csc4010.py:183:4: C0103: Method name "movePad2Down" doesn't conform to snake_case naming style (invalid-name)
+proj2csc4010.py:222:25: C0209: Formatting a regular string which could be an f-string (consider-using-f-string) proj2csc4010.py:271:33: C0209: Formatting a regular string which could be an f-string (consider-using-f-string) proj2csc4010.py:285:33: C0209: Formatting a regular string which could be an f-string (consider-using-f-string) proj2csc4010.py:21:8: W0201: Attribute 'top_border' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:22:8: W0201: Attribute 'bottom_border' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:23:8: W0201: Attribute 'right_border' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:24:8: W0201: Attribute 'left_border' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:25:8: W0201: Attribute 'paddle_speed' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:26:8: W0201: Attribute 'paddle_boundary_top' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:27:8: W0201: Attribute 'paddle_boundary_bottom' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:28:8: W0201: Attribute 'max_score' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:29:8: W0201: Attribute 'playerA' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:30:8: W0201: Attribute 'playerB' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:31:8: W0201: Attribute 'paddle1' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:118:8: W0201: Attribute 'paddle1' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:32:8: W0201: Attribute 'paddle2' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:126:8: W0201: Attribute 'paddle2' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:33:8: W0201: Attribute 'ball' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:135:8: W0201: Attribute 'ball' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:34:8: W0201: Attribute 'score' defined outside __init__ (attribute-defined-outside-init)
+ proj2csc4010.py:145:8: W0201: Attribute 'score' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:42:8: W0201: Attribute 'screen' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:47:8: W0201: Attribute 'background' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:61:8: W0201: Attribute 'left_line' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:82:8: W0201: Attribute 'right_line' defined outside __init__ (attribute-defined-outside-init) proj2csc4010.py:104:8: W0201: Attribute 'net' defined outside __init__ (attribute-defined-outside-init)
+This function: User input to be filtered for special characters
+ """This function User input to be filtered
+for special characters"""
+def filter_special_characters(input_string):
+   # Allow only letters, numbers, and some punctuation
+   sanitized_string = re.sub(r'[^a-zA-Z0-9 .,?!]', '', input_string)
+   return sanitized_string
+User agreement:
+The show_user_agreement function displays a user agreement in a new window.
+It includes the agreement's text within a scrolled text.ScrolledText widget, allowing users to scroll through the content. After reading, users can accept the terms by clicking an "I Agree" button, which will close the agreement window.
+
+ This function ensures users are presented with and agree to the terms and conditions, privacy policies, and other important information before proceeding with the application.
+The agreement covers key areas such as data privacy, application sharing policies, data usage restrictions, security measures, changes in requirements, disclaimers, and indemnity clauses. This setup effectively communicates the application's legal and privacy expectations to the users, ensuring informed consent.
+ def show_user_agreement(root):
+   agreement_text = """
+       User Agreement:
+       Data Privacy:
+       - Your data privacy is important to us. We collect and process data only for
+the purpose of this application's functionality.
+       - We do not share your personal information with third parties without your
+consent.
+       Application Sharing:
+       - You may use the application on your personal devices.
+       - Sharing your application credentials with others is prohibited.
+       - Each user should have a separate account.
+Data Usage:
+       - You may not sell or distribute data generated or collected by this
+application without the express consent of Forestview.
+
+         Security Measures:
+       - We conduct periodic vulnerability assessments to ensure the security of our
+system.
+       - We demand that all our key vendors adhere to strict security standards and
+perform periodic vulnerability assessments.
+       Change of Requirements:
+       - As technology and the overall security landscape evolve, requirements for
+using this application may change.
+       - Users will be notified of any changes through the application's official
+communication channels.
+       Disclaimer:
+       - This application is provided "as is" without any warranties.
+       - Forestview is not responsible for any data breaches, losses, or damages.
+       Indemnity Clause:
+       - By using this application, you agree to indemnify Forestview from any legal
+ramifications arising from data breaches, zero-day attacks, and database worms,
+including SQL injection.
+       By proceeding, you accept the terms of this agreement.
+   """
+   # Create a new window for the agreement
+   agreement_window = tk.Toplevel(root)
+   agreement_window.title("User Agreement")
+
+  agreement_window.geometry("600x400")
+agreement_window.config(bg='lightblue')
+text_widget = scrolledtext.ScrolledText(agreement_window, wrap=tk.WORD)
+text_widget.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+text_widget.insert(tk.INSERT, agreement_text)
+text_widget.config(state='disabled')
+# Function to close the agreement window and proceed
+def on_agree():
+    agreement_window.destroy()
+# Agree button
+agree_button = tk.Button(agreement_window, text="I Agree", command=on_agree)
+agree_button.pack(pady=10)
+agreement_window.wait_window()
+This is the user agreement window:
+
+ Upon clicking “I Agree” to the User Agreement terms” The Pyhton Pong will open.
+ 
